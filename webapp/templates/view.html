@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prediction — {{ job_id }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Live prediction</h1>
+      <p class="sub">Green = observed path &nbsp;·&nbsp; Red = predicted future path.
+        The stream plays once as the video is processed.</p>
+    </header>
+
+    <div class="grid">
+      <div class="card video">
+        <!-- MJPEG stream: the pipeline runs while this <img> is fetched -->
+        <img id="stream" src="{{ url_for('stream', job_id=job_id) }}" alt="processing…">
+      </div>
+
+      <aside class="card stats">
+        <h2>Statistics</h2>
+        <div class="stat"><span>Status</span><b id="st-status">starting…</b></div>
+        <div class="stat"><span>Frames processed</span><b id="st-frames">0</b></div>
+        <div class="stat"><span>People right now</span><b id="st-now">0</b></div>
+        <div class="stat"><span>Unique people</span><b id="st-unique">0</b></div>
+        <div class="stat"><span>Max in a frame</span><b id="st-max">0</b></div>
+        <div class="stat"><span>Predictions made</span><b id="st-preds">0</b></div>
+
+        <a class="btn" id="dl" href="{{ url_for('download', job_id=job_id) }}"
+           style="display:none">⬇ Download annotated video</a>
+        <a class="btn ghost" href="{{ url_for('index') }}">← Process another video</a>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const jobId = "{{ job_id }}";
+    const el = id => document.getElementById(id);
+
+    async function poll() {
+      try {
+        const r = await fetch(`/status/${jobId}`);
+        const s = await r.json();
+        el('st-frames').textContent = s.frames ?? 0;
+        el('st-now').textContent    = s.people_now ?? 0;
+        el('st-unique').textContent = s.unique_people ?? 0;
+        el('st-max').textContent    = s.max_people ?? 0;
+        el('st-preds').textContent  = s.total_predictions ?? 0;
+        if (s.done) {
+          el('st-status').textContent = 'done ✓';
+          el('dl').style.display = 'inline-block';
+          return; // stop polling
+        }
+        el('st-status').textContent = s.started ? 'processing…' : 'starting…';
+      } catch (e) { /* keep trying */ }
+      setTimeout(poll, 500);
+    }
+    poll();
+  </script>
+</body>
+</html>

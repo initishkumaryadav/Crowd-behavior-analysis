@@ -1,0 +1,15 @@
+# Extra dependencies for the video -> trajectory-prediction pipeline.
+#
+# IMPORTANT: install these AFTER the CUDA torch build, and note that
+# `pip install ultralytics` may try to pull a CPU-only torch that overwrites
+# your CUDA build. If that happens, reinstall the matching CUDA pair:
+#
+#   pip install torch==2.11.0 torchvision==0.26.0 \
+#       --index-url https://download.pytorch.org/whl/cu128
+#
+# torch and torchvision versions MUST match (2.11.0 <-> 0.26.0), or YOLO fails
+# with "operator torchvision::nms does not exist".
+
+ultralytics>=8.3.0
+opencv-python>=4.9
+flask>=3.0          # web interface (webapp/): upload a video, watch predictions live

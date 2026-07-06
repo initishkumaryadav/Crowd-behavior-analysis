@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crowd Trajectory Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Crowd Trajectory Prediction</h1>
+      <p class="sub">Upload a crowd video — the system detects people, tracks them,
+        and predicts each person's next few seconds of motion using
+        <strong>NSP-SFM</strong> (Neural Social Physics).</p>
+    </header>
+
+    <form class="card upload" action="{{ url_for('upload') }}"
+          method="post" enctype="multipart/form-data" id="form">
+      <label class="drop" id="drop">
+        <input type="file" name="video" id="file" accept="video/*" hidden>
+        <div class="drop-inner">
+          <div class="icon">⬆</div>
+          <div id="label">Click to choose a video (or drag &amp; drop)</div>
+          <div class="hint">.mp4 &nbsp;.avi &nbsp;.mov &nbsp;.mkv &nbsp;.webm — up to 500 MB</div>
+        </div>
+      </label>
+      <button type="submit" id="go" disabled>Run prediction</button>
+    </form>
+
+    <div class="card legend">
+      <span><i class="sw green"></i> observed path (past)</span>
+      <span><i class="sw red"></i> predicted path (next ~4.8&nbsp;s)</span>
+    </div>
+  </div>
+
+  <script>
+    const file = document.getElementById('file');
+    const drop = document.getElementById('drop');
+    const label = document.getElementById('label');
+    const go = document.getElementById('go');
+    function setName(f){ if(f){ label.textContent = f.name; go.disabled = false; } }
+    file.addEventListener('change', () => setName(file.files[0]));
+    ['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => {
+      ev.preventDefault(); drop.classList.add('over'); }));
+    ['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => {
+      ev.preventDefault(); drop.classList.remove('over'); }));
+    drop.addEventListener('drop', ev => { file.files = ev.dataTransfer.files; setName(file.files[0]); });
+    document.getElementById('form').addEventListener('submit', () => {
+      go.disabled = true; go.textContent = 'Uploading…';
+    });
+  </script>
+</body>
+</html>
