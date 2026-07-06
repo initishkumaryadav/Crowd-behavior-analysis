@@ -1,0 +1,8 @@
+
+# Ignore Python virtual environment
+.venv/
+__pycache__/
+
+# Ignore video uploads and generated outputs
+webapp/uploads/*.mp4
+webapp/outputs/*.mp4
