@@ -1,16 +1,3 @@
-# Project Overview — Crowd Behaviour Analysis with NSP-SFM
-
-A complete, from-scratch PyTorch project that implements **NSP-SFM
-(Neural Social Physics — Social Force Model)**, the flagship *physics-inspired
-deep learning* method for **human trajectory prediction** reviewed in Section 2.3
-of the survey *"Recent Deep Learning in Crowd Behaviour Analysis: A Brief Review"*
-(Yue & Wang, 2025), first proposed by Yue, Manocha & Wang (ECCV 2022).
-
-This document explains, in plain terms, **what the project does, how it works,
-what every file is for, and exactly how you can test it** — even if you have
-never seen this codebase before.
-
----
 
 ## 1. What problem does it solve?
 
